@@ -142,7 +142,7 @@ async def students(message: types.CallbackQuery, state: FSMContext):
     classes = await api.classes()
     for class_ in classes:
         _, students_class = await api.class_info(class_['id'], False)
-        users.extend([f"{user['name']} - {class_['name']}" for user in students_class])
+        users.extend([f"{user['studentname']} - {class_['name']}" for user in students_class])
     await api.logout()
 
     result = "\n".join(users)
@@ -208,7 +208,7 @@ async def class_info(message: types.CallbackQuery, state: FSMContext):
     result += f"*🧑‍🏫Классный руководитель*: {class_['chiefs'][0]['name']}\n"
     result += f"\n*🔢Состав класса({len(students)})*:"
     for i, student in enumerate(students):
-        result += f"\n{(await number_to_emoji(i))}{student['name']}"
+        result += f"\n{(await number_to_emoji(i))}{student['studentname']}"
     await message.message.edit_text(result, reply_markup=keyboard_info, parse_mode="markdown")
 
 def register(dp: Dispatcher):
