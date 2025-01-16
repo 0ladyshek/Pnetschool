@@ -1,0 +1,2 @@
+class NetSchoolAPIError(Exception):
+    pass
