@@ -3,9 +3,6 @@ from typing import Union, Optional
 from yarl import URL
 from hashlib import md5
 from datetime import datetime, timedelta
-from bs4 import BeautifulSoup as bs4
-from base64 import b64decode
-from json import loads
 from .errors import NetSchoolAPIError
 
 class NetSchool:
@@ -269,7 +266,11 @@ class NetSchool:
 
     async def class_info(self, class_id: Optional[int] = 0, info: bool = True) -> list:
         if info: info = await self.requester(f"/webapi/classes/{class_id}?expand=room&expand=chiefs&expand=hasClassNotWorkingTeacher")
-        students = await self.requester(f"/webapi/users/studentlist", params = {"classId": class_id})
+        
+        async with self.client.request("GET", "/api/v2/lacc/GetStudentList2", params = {"ClassID": class_id, "out": "json"}) as response:
+            students = await response.json()
+        
+        #students = await self.requester(f"/webapi/users/studentlist", params = {"classId": class_id})
         return info, students
     
     async def advanced_schedule(self, class_id: Optional[list] = [], teacher_id: Optional[int] = 0, start: Optional[datetime] = None, end: Optional[datetime] = None):
